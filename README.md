@@ -1,42 +1,72 @@
 # 🧠 AWS Image Recognition Pipeline (S3 + Lambda + Rekognition + DynamoDB)
 
-This project implements an automated pipeline where an image uploaded to **Amazon S3** triggers an **AWS Lambda** function. The function uses **Amazon Rekognition** to analyze the image and stores the detected labels in **Amazon DynamoDB**.
+This project demonstrates an automated image recognition workflow using AWS services. When an image is uploaded to **Amazon S3**, it triggers a **Lambda function** that uses **Amazon Rekognition** to analyze the image. The detected labels and their confidence scores are then stored in **Amazon DynamoDB**.
 
 ---
 
 ## 🚀 Features
 
-- 📤 Upload image to S3
-- ⚡ Trigger Lambda on S3 `ObjectCreated` event
-- 🔍 Analyze image with Rekognition
-- 🗂️ Store labels and confidence scores in DynamoDB
+- 📤 Upload images to S3
+- ⚡ Automatically triggers AWS Lambda
+- 🔍 Detects image labels using Rekognition
+- 🗂️ Stores results in DynamoDB
 
 ---
 
-## 🛠️ Architecture
+## 🧱 Architecture
 
-```text
-[S3 Bucket] ---> (Trigger) ---> [Lambda Function] ---> [Rekognition API]
-                                                           |
-                                                           v
-                                                  [DynamoDB Table]
-----
+[S3 Bucket] ---> (Trigger) ---> [Lambda Function] ---> [Rekognition] | v [DynamoDB Table]
 
-###⚙️ Services Used
-Amazon S3 – Stores uploaded images
 
-AWS Lambda – Executes backend logic
+---
 
-Amazon Rekognition – Detects labels in images
+## 🛠️ AWS Services Used
 
-Amazon DynamoDB – Stores label results with metadata
-------
+- **Amazon S3** – To store uploaded images
+- **AWS Lambda** – To process images and invoke Rekognition
+- **Amazon Rekognition** – To detect labels in the image
+- **Amazon DynamoDB** – To store the detected labels and metadata
 
-### 🔧 How It Works
-✅ Upload an image to a specified S3 bucket.
+---
 
-⚡ An S3 event triggers the Lambda function.
+## 🔄 How It Works
 
-🧠 Lambda calls Rekognition to detect image labels.
+1. ✅ A user uploads an image to an **S3 bucket**.
+2. ⚡ An **S3 event** triggers the **Lambda function**.
+3. 🧠 Lambda uses **Rekognition** to analyze the image and extract labels.
+4. 🗃️ The labels and their confidence scores are saved to **DynamoDB**.
 
-🗂️ The result is formatted and saved into a DynamoDB table.
+---
+
+## 🗂️ DynamoDB Table Schema
+
+| Attribute   | Type   | Description                        |
+|-------------|--------|------------------------------------|
+| ImageName   | String | Name of the uploaded image         |
+| Label       | String | Detected label (e.g., 'Dog')       |
+| Confidence  | Number | Confidence score (e.g., 98.7)      |
+
+---
+
+## ⚙️ Setup Instructions
+
+1. **Create an S3 Bucket**
+   - Enable event notifications for `ObjectCreated`.
+
+2. **Create a DynamoDB Table**
+   - Partition key: `ImageName` (String)
+
+3. **Create and Deploy a Lambda Function**
+   - Set the S3 bucket as the trigger.
+   - Add IAM permissions for:
+     - `s3:GetObject`
+     - `rekognition:DetectLabels`
+     - `dynamodb:PutItem`
+
+4. **Test the Flow**
+   - Upload an image to S3.
+   - Check DynamoDB for the recognized labels.
+
+---
+
+Let me know if you need the full Lambda code or a CloudFormation/CDK deployment template!
