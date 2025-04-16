@@ -68,5 +68,5 @@ This project demonstrates an automated image recognition workflow using AWS serv
    - Check DynamoDB for the recognized labels.
 
 ---
-
+# For help or queries feel free to reach out me through mail ajithbhumireddy30@gmail.com
 Let me know if you need the full Lambda code or a CloudFormation/CDK deployment template!
